@@ -33,9 +33,11 @@ export default function Home() {
         }}
       >
         {/* КАРТИНКА */}
-        <div style={{ width: "45%", minWidth: "45%" }}>
-          <img
-            src="/hoodie.jpg"
+        <div style={{ width: "45%", minWidth: "45%" }} 
+            <img
+  src="https://i.imgur.com/3QZQZQy.png"
+  style={{ width: "100%", borderRadius: "10px" }}
+/>
             style={{ width: "100%", borderRadius: "10px" }}
           />
         </div>
