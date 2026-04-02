@@ -3,9 +3,9 @@ import { useState } from "react";
 export default function Home() {
   const [cart, setCart] = useState([]);
 
-  const addToCart = () => {
+  function addToCart() {
     setCart([...cart, "Кофта SensX"]);
-  };
+  }
 
   return (
     <div style={{ background: "#0a0a0a", color: "white", minHeight: "100vh", padding: "20px" }}>
@@ -16,15 +16,18 @@ export default function Home() {
         <p>1500 грн</p>
         <p style={{ color: "#aaa" }}>Чёрная кофта SensX с капюшоном</p>
 
-        <button onClick={addToCart} style={{ padding: "10px", width: "100%" }}>
+        <button onClick={addToCart} style={{ padding: "10px", width: "100%", marginTop: "10px" }}>
           Добавить в корзину
         </button>
       </div>
 
       <h2 style={{ marginTop: "30px" }}>Корзина:</h2>
+
       {cart.length === 0 ? (
         <p>Пусто</p>
       ) : (
-        cart.map((item, i) => <p key={i}>{item}</p>)
+        cart.map((item, index) => <p key={index}>{item}</p>)
       )}
     </div>
+  );
+      }
