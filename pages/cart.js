@@ -1,26 +1,42 @@
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 
 export default function Cart() {
   const [cart, setCart] = useState([]);
+  const router = useRouter();
 
   useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem("cart")) || [];
-    setCart(saved);
+    const data = JSON.parse(localStorage.getItem("cart")) || [];
+    setCart(data);
   }, []);
 
   return (
-    <div style={{ background: "#0a0a0a", color: "white", minHeight: "100vh", padding: "20px" }}>
+    <div style={{ padding: "20px", fontFamily: "Arial" }}>
       <h1>Корзина</h1>
 
       {cart.length === 0 ? (
-        <p>Пусто</p>
+        <p>Корзина пустая</p>
       ) : (
-        cart.map((item, index) => <p key={index}>{item}</p>)
+        cart.map((item, i) => (
+          <div key={i} style={{ marginBottom: "20px" }}>
+            <h3>{item.name}</h3>
+            <p>{item.price} грн</p>
+          </div>
+        ))
       )}
 
-      <a href="/" style={{ display: "block", marginTop: "20px" }}>
-        ← Назад
-      </a>
+      <button
+        onClick={() => router.push("/")}
+        style={{
+          marginTop: "20px",
+          padding: "10px",
+          background: "black",
+          color: "white",
+          border: "none",
+        }}
+      >
+        Назад
+      </button>
     </div>
   );
 }
