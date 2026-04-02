@@ -1,10 +1,17 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function Home() {
   const [cart, setCart] = useState([]);
 
+  useEffect(() => {
+    const saved = JSON.parse(localStorage.getItem("cart")) || [];
+    setCart(saved);
+  }, []);
+
   function addToCart() {
-    setCart([...cart, "Кофта SensX"]);
+    const newCart = [...cart, "Кофта SensX"];
+    setCart(newCart);
+    localStorage.setItem("cart", JSON.stringify(newCart));
   }
 
   return (
@@ -16,18 +23,29 @@ export default function Home() {
         <p>1500 грн</p>
         <p style={{ color: "#aaa" }}>Чёрная кофта SensX с капюшоном</p>
 
-        <button onClick={addToCart} style={{ padding: "10px", width: "100%", marginTop: "10px" }}>
+        <button onClick={addToCart} style={{ padding: "10px", width: "100%" }}>
           Добавить в корзину
         </button>
       </div>
 
-      <h2 style={{ marginTop: "30px" }}>Корзина:</h2>
-
-      {cart.length === 0 ? (
-        <p>Пусто</p>
-      ) : (
-        cart.map((item, index) => <p key={index}>{item}</p>)
-      )}
+      {/* КНОПКА СПРАВА СНИЗУ */}
+      <a href="/cart" style={{
+        position: "fixed",
+        bottom: "20px",
+        right: "20px",
+        width: "60px",
+        height: "60px",
+        background: "white",
+        color: "black",
+        borderRadius: "50%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontWeight: "bold",
+        textDecoration: "none"
+      }}>
+        🛒
+      </a>
     </div>
   );
-      }
+}
