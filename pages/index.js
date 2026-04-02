@@ -23,11 +23,16 @@ export default function Home() {
       </h1>
 
       {/* Товар */}
-      <div style={{ display: "flex", alignItems: "center", marginTop: "20px" }}>
+      <div style={{
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  marginTop: "20px"
+}}>
 
         {/* Левая часть (картинка) */}
-        <div style={{ width: "45%" }}>
-          <img
+        <div style={{ width: "45%" , minWidth: "45%" }}>
+      
             src="/logo.png"
             style={{ width: "100%", borderRadius: "10px" }}
           />
@@ -42,7 +47,7 @@ export default function Home() {
         }} />
 
         {/* Правая часть (инфо) */}
-        <div style={{ width: "45%", color: "#000" }}>
+        <div style={{ width: "45%", minWidth: "45%", color: "#000" }}>
           <h2>Кофта SensX</h2>
           <p style={{ color: "#555" }}>
             Чёрная кофта с логотипом SensX
