@@ -1,87 +1,71 @@
-import { useRouter } from "next/router";
+import { useState, useEffect } from "react";
 
 export default function Home() {
-  const router = useRouter();
+  const [cart, setCart] = useState([]);
 
-  const addToCart = () => {
-    localStorage.setItem(
-      "cart",
-      JSON.stringify([
-        {
-          name: "Кофта SensX",
-          price: 1500,
-        },
-      ])
+  useEffect(() => {
+    const saved = JSON.parse(localStorage.getItem("cart")) || [];
+    setCart(saved);
+  }, []);
+
+  function addToCart() {
+    const existingIndex = cart.findIndex(
+      (item) => item.name === "Кофта SensX"
     );
-    alert("Добавлено в корзину");
-  };
+
+    let newCart = [...cart];
+
+    if (existingIndex !== -1) {
+      newCart[existingIndex].count += 1;
+    } else {
+      newCart.push({
+        name: "Кофта SensX",
+        price: 1500,
+        count: 1
+      });
+    }
+
+    setCart(newCart);
+    localStorage.setItem("cart", JSON.stringify(newCart));
+  }
 
   return (
     <div style={{ padding: "20px", fontFamily: "Arial" }}>
       
-      {/* Название */}
-      <h1 style={{ textAlign: "center" }}>SensX</h1>
-
-      {/* Товар */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          marginTop: "40px",
-          borderBottom: "1px solid #ccc",
-          paddingBottom: "20px",
-        }}
-      >
-        {/* КАРТИНКА */}
-        <div style={{ width: "45%", minWidth: "45%" }} 
-            <img
-  src="https://i.imgur.com/3QZQZQy.png"
-  style={{ width: "100%", borderRadius: "10px" }}
-/>
-            style={{ width: "100%", borderRadius: "10px" }}
-          />
-        </div>
-
-        {/* ОПИСАНИЕ */}
-        <div style={{ width: "45%", minWidth: "45%" }}>
-          <h2>Кофта SensX</h2>
-          <p>Чёрная кофта SensX с капюшоном</p>
-          <p style={{ fontWeight: "bold" }}>1500 грн</p>
-
-          <button
-            onClick={addToCart}
-            style={{
-              marginTop: "10px",
-              padding: "10px",
-              background: "black",
-              color: "white",
-              border: "none",
-              borderRadius: "5px",
-            }}
-          >
-            В корзину
+      {/* КНОПКА В КОРЗИНУ */}
+      <div style={{ marginBottom: "20px" }}>
+        <a href="/cart">
+          <button>
+            🛒 Корзина ({cart.reduce((sum, item) => sum + item.count, 0)})
           </button>
-        </div>
+        </a>
       </div>
 
-      {/* КНОПКА КОРЗИНЫ */}
-      <button
-        onClick={() => router.push("/cart")}
+      {/* ТОВАР */}
+      <div
         style={{
-          position: "fixed",
-          bottom: "20px",
-          right: "20px",
-          width: "60px",
-          height: "60px",
-          borderRadius: "50%",
-          background: "black",
-          color: "white",
-          border: "none",
-          fontSize: "20px",
+          maxWidth: "400px",
+          border: "1px solid #ddd",
+          padding: "15px",
+          borderRadius: "10px"
         }}
       >
-        🛒
-      </button>
+        <img
+          src="https://i.imgur.com/3QZQZQy.png"
+          style={{
+            width: "100%",
+            borderRadius: "10px"
+          }}
+        />
+
+        <h2>Кофта SensX</h2>
+        <p style={{ color: "#555" }}>Чёрная стильная кофта</p>
+        <p style={{ fontWeight: "bold" }}>1500 ₽</p>
+
+        <button onClick={addToCart}>
+          Добавить в корзину
+        </button>
+      </div>
     </div>
   );
-}
+          }
