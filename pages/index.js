@@ -1,34 +1,30 @@
+import { useState } from "react";
+
 export default function Home() {
+  const [cart, setCart] = useState([]);
+
+  const addToCart = () => {
+    setCart([...cart, "Кофта SensX"]);
+  };
+
   return (
-    <div style={{ background: "#0a0a0a", color: "#fff", minHeight: "100vh", padding: "20px" }}>
-      <h1 style={{ fontSize: "28px", marginBottom: "20px" }}>SensX</h1>
+    <div style={{ background: "#0a0a0a", color: "white", minHeight: "100vh", padding: "20px" }}>
+      <h1>SensX</h1>
 
-      <div style={{ border: "1px solid #222", padding: "15px", borderRadius: "10px" }}>
-        <img
-          src="https://via.placeholder.com/300x400"
-          style={{ width: "100%", borderRadius: "10px" }}
-        />
+      <div style={{ border: "1px solid #333", padding: "20px", borderRadius: "10px" }}>
+        <h2>Кофта SensX</h2>
+        <p>1500 грн</p>
+        <p style={{ color: "#aaa" }}>Чёрная кофта SensX с капюшоном</p>
 
-        <div style={{ marginTop: "10px" }}>
-          <h2>Кофта SensX</h2>
-          <p>1500 грн</p>
-          <p style={{ color: "#aaa" }}>
-            Чёрная кофта SensX с капюшоном
-          </p>
-
-          <button style={{
-            marginTop: "10px",
-            padding: "10px",
-            width: "100%",
-            background: "#fff",
-            color: "#000",
-            border: "none",
-            borderRadius: "8px"
-          }}>
-            Добавить в корзину
-          </button>
-        </div>
+        <button onClick={addToCart} style={{ padding: "10px", width: "100%" }}>
+          Добавить в корзину
+        </button>
       </div>
+
+      <h2 style={{ marginTop: "30px" }}>Корзина:</h2>
+      {cart.length === 0 ? (
+        <p>Пусто</p>
+      ) : (
+        cart.map((item, i) => <p key={i}>{item}</p>)
+      )}
     </div>
-  );
-}
