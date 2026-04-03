@@ -8,9 +8,9 @@ export default function Home() {
     setCart(saved);
   }, []);
 
-  function addToCart() {
+  function addToCart(product) {
     const existingIndex = cart.findIndex(
-      (item) => item.name === "Кофта SensX"
+      (item) => item.name === product.name
     );
 
     let newCart = [...cart];
@@ -18,77 +18,54 @@ export default function Home() {
     if (existingIndex !== -1) {
       newCart[existingIndex].count += 1;
     } else {
-      newCart.push({
-        name: "Кофта SensX",
-        price: 1500,
-        count: 1
-      });
+      newCart.push({ ...product, count: 1 });
     }
 
     setCart(newCart);
     localStorage.setItem("cart", JSON.stringify(newCart));
   }
 
+  const products = [
+    {
+      name: "Кофта SensX",
+      price: 1500,
+      img: "https://i.imgur.com/3QZQZQy.png"
+    },
+    {
+      name: "Футболка SensX",
+      price: 900,
+      img: "https://i.imgur.com/3QZQZQy.png"
+    }
+  ];
+
   return (
-    <div style={{
-      background: "#fff",
-      minHeight: "100vh",
-      fontFamily: "Arial",
-      padding: "20px"
-    }}>
+    <div style={{ padding: "20px", fontFamily: "Arial" }}>
 
-      {/* ЛОГО */}
-      <h1 style={{
-        textAlign: "center",
-        fontWeight: "bold",
-        letterSpacing: "2px"
-      }}>
-        SENSX
-      </h1>
+      <h1 style={{ textAlign: "center" }}>SENSX</h1>
 
-      {/* ТОВАР */}
+      {/* СЕТКА */}
       <div style={{
-        maxWidth: "350px",
-        margin: "40px auto",
-        textAlign: "left"
+        display: "grid",
+        gridTemplateColumns: "1fr 1fr",
+        gap: "20px",
+        marginTop: "30px"
       }}>
-        <img
-          src="https://i.imgur.com/3QZQZQy.png"
-          style={{
-            width: "100%",
-            borderRadius: "12px"
-          }}
-        />
+        {products.map((p, i) => (
+          <div key={i} style={{
+            border: "1px solid #ddd",
+            padding: "10px",
+            borderRadius: "10px"
+          }}>
+            <img src={p.img} style={{ width: "100%" }} />
 
-        <h2 style={{ marginTop: "15px" }}>
-          Кофта SensX
-        </h2>
+            <h3>{p.name}</h3>
+            <p>{p.price} грн</p>
 
-        <p style={{ color: "#666" }}>
-          Чёрная кофта с капюшоном
-        </p>
-
-        <p style={{
-          fontWeight: "bold",
-          fontSize: "18px"
-        }}>
-          1500 грн
-        </p>
-
-        <button
-          onClick={addToCart}
-          style={{
-            width: "100%",
-            padding: "12px",
-            background: "black",
-            color: "white",
-            border: "none",
-            borderRadius: "8px",
-            marginTop: "10px"
-          }}
-        >
-          Добавить в корзину
-        </button>
+            <button onClick={() => addToCart(p)}>
+              В корзину
+            </button>
+          </div>
+        ))}
       </div>
 
       {/* КОРЗИНА */}
@@ -104,10 +81,9 @@ export default function Home() {
           borderRadius: "50%",
           display: "flex",
           alignItems: "center",
-          justifyContent: "center",
-          fontSize: "20px"
+          justifyContent: "center"
         }}>
-          🛒 {cart.reduce((sum, item) => sum + item.count, 0)}
+          🛒
         </div>
       </a>
 
