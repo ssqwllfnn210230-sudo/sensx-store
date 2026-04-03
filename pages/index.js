@@ -39,37 +39,87 @@ export default function Home() {
   ];
 
   return (
-    <div style={{ padding: "20px", fontFamily: "Arial" }}>
+    <div style={{
+      background: "#fff",
+      minHeight: "100vh",
+      fontFamily: "Arial",
+      padding: "20px"
+    }}>
 
+      {/* ЛОГО */}
       <h1 style={{
-  position: "absolute",
-  top: "20px",
-  left: "20px",
-  margin: 0
-}}>
-  SensX Shop
-</h1>
+        position: "absolute",
+        top: "20px",
+        left: "20px",
+        margin: 0,
+        fontSize: "20px",
+        letterSpacing: "1px"
+      }}>
+        SensX Shop
+      </h1>
 
       {/* СЕТКА */}
       <div style={{
         display: "grid",
         gridTemplateColumns: "1fr 1fr",
-        gap: "20px",
-        marginTop: "30px"
+        gap: "25px",
+        marginTop: "80px"
       }}>
         {products.map((p, i) => (
-          <div key={i} style={{
-            border: "1px solid #ddd",
-            padding: "10px",
-            borderRadius: "10px"
-          }}>
-            <img src={p.img} style={{ width: "100%" }} />
+          <div
+            key={i}
+            style={{
+              transition: "0.2s",
+              cursor: "pointer"
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.transform = "scale(1.03)";
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.transform = "scale(1)";
+            }}
+          >
+            <img
+              src={p.img}
+              style={{
+                width: "100%",
+                borderRadius: "12px"
+              }}
+            />
 
-            <h3>{p.name}</h3>
-            <p>{p.price} грн</p>
+            <h3 style={{ margin: "10px 0 5px" }}>
+              {p.name}
+            </h3>
 
-            <button onClick={() => addToCart(p)}>
-              В корзину
+            <p style={{
+              color: "#777",
+              fontSize: "14px",
+              margin: 0
+            }}>
+              Минимал стиль
+            </p>
+
+            <p style={{
+              fontWeight: "bold",
+              marginTop: "5px"
+            }}>
+              {p.price} грн
+            </p>
+
+            <button
+              onClick={() => addToCart(p)}
+              style={{
+                width: "100%",
+                padding: "10px",
+                background: "black",
+                color: "white",
+                border: "none",
+                borderRadius: "8px",
+                marginTop: "10px",
+                cursor: "pointer"
+              }}
+            >
+              Добавить
             </button>
           </div>
         ))}
@@ -83,14 +133,16 @@ export default function Home() {
           right: "20px",
           background: "black",
           color: "white",
-          width: "60px",
-          height: "60px",
+          width: "65px",
+          height: "65px",
           borderRadius: "50%",
           display: "flex",
           alignItems: "center",
-          justifyContent: "center"
+          justifyContent: "center",
+          fontSize: "18px",
+          boxShadow: "0 5px 15px rgba(0,0,0,0.2)"
         }}>
-          🛒
+          🛒 {cart.reduce((sum, item) => sum + item.count, 0)}
         </div>
       </a>
 
