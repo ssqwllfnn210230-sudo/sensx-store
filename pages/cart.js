@@ -8,6 +8,12 @@ export default function Cart() {
     setCart(saved);
   }, []);
 
+  function removeItem(index) {
+    const newCart = cart.filter((_, i) => i !== index);
+    setCart(newCart);
+    localStorage.setItem("cart", JSON.stringify(newCart));
+  }
+
   const total = cart.reduce(
     (sum, item) => sum + item.price * item.count,
     0
@@ -23,8 +29,32 @@ export default function Cart() {
         <p>Пусто</p>
       ) : (
         cart.map((item, i) => (
-          <div key={i} style={{ marginTop: "10px" }}>
-            {item.name} — {item.price} грн × {item.count}
+          <div
+            key={i}
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              marginTop: "10px",
+              borderBottom: "1px solid #ddd",
+              paddingBottom: "10px"
+            }}
+          >
+            {/* ЛЕВО */}
+            <div>
+              <button
+                onClick={() => removeItem(i)}
+                style={{
+                  marginRight: "10px",
+                  background: "red",
+                  color: "white",
+                  border: "none"
+                }}
+              >
+                Убрать
+              </button>
+
+              {item.name} — {item.price} грн × {item.count}
+            </div>
           </div>
         ))
       )}
