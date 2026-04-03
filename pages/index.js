@@ -41,7 +41,14 @@ export default function Home() {
   return (
     <div style={{ padding: "20px", fontFamily: "Arial" }}>
 
-      <h1 style={{ textAlign: "center" }}>SENSX</h1>
+      <h1 style={{
+  position: "absolute",
+  top: "20px",
+  left: "20px",
+  margin: 0
+}}>
+  SensX Shop
+</h1>
 
       {/* СЕТКА */}
       <div style={{
