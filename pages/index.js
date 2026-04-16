@@ -66,25 +66,41 @@ export default function Home() {
         SensX Shop
       </h1>
 
-      {/* МЕНЮ */}
-      {menuOpen && (
-        <div style={{
+      {/* 🔥 ТЁМНЫЙ ФОН */}
+      <div
+        onClick={() => setMenuOpen(false)}
+        style={{
           position: "fixed",
           top: 0,
           left: 0,
-          width: "250px",
+          width: "100%",
           height: "100%",
-          background: "black",
-          color: "white",
-          padding: "20px"
-        }}>
-          <div onClick={() => setMenuOpen(false)}>✕ Закрыть</div>
+          background: "rgba(0,0,0,0.4)",
+          opacity: menuOpen ? 1 : 0,
+          pointerEvents: menuOpen ? "auto" : "none",
+          transition: "0.3s"
+        }}
+      />
 
-          <p>👤 Профиль</p>
-          <p>📦 Заказы</p>
-          <p>⚙️ Настройки</p>
-        </div>
-      )}
+      {/* 🔥 ВЫЕЗЖАЮЩЕЕ МЕНЮ */}
+      <div style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "260px",
+        height: "100%",
+        background: "black",
+        color: "white",
+        padding: "20px",
+        transform: menuOpen ? "translateX(0)" : "translateX(-100%)",
+        transition: "0.3s ease"
+      }}>
+        <h2>SensX</h2>
+
+        <p style={{ marginTop: "20px" }}>👤 Профиль</p>
+        <p>📦 Заказы</p>
+        <p>⚙️ Настройки</p>
+      </div>
 
       {/* ОТСТУП */}
       <div style={{ marginTop: "80px" }} />
