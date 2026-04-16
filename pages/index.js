@@ -30,43 +30,50 @@ export default function Home() {
     {
       name: "Кофта SensX",
       price: 1500,
-      img: "https://i.imgur.com/3QZQZQy.png"
+      img: "https://i.imgur.com/3QZQZQy.png",
     },
     {
       name: "Футболка SensX",
       price: 900,
-      img: "https://i.imgur.com/3QZQZQy.png"
-    }
+      img: "https://i.imgur.com/3QZQZQy.png",
+    },
   ];
 
   return (
-    <div style={{ padding: "20px", fontFamily: "Arial" }}>
+    <div style={{ fontFamily: "Arial" }}>
 
-      {/* ☰ */}
+      {/* TOP BAR */}
       <div
-        onClick={() => setMenuOpen(true)}
         style={{
-          position: "absolute",
-          top: "20px",
-          left: "20px",
-          fontSize: "24px",
-          cursor: "pointer"
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          height: "60px",
+          display: "flex",
+          alignItems: "center",
+          padding: "0 20px",
+          background: "white",
+          zIndex: 1000,
+          borderBottom: "1px solid #eee",
         }}
       >
-        ☰
+        {/* MENU BUTTON */}
+        <div
+          onClick={() => setMenuOpen(true)}
+          style={{
+            fontSize: "26px",
+            cursor: "pointer",
+            userSelect: "none",
+          }}
+        >
+          ☰
+        </div>
+
+        <h2 style={{ marginLeft: "15px" }}>SensX Shop</h2>
       </div>
 
-      {/* ЛОГО */}
-      <h1 style={{
-        position: "absolute",
-        top: "20px",
-        left: "60px",
-        margin: 0
-      }}>
-        SensX Shop
-      </h1>
-
-      {/* 🔥 ТЁМНЫЙ ФОН */}
+      {/* DARK OVERLAY */}
       <div
         onClick={() => setMenuOpen(false)}
         style={{
@@ -75,73 +82,81 @@ export default function Home() {
           left: 0,
           width: "100%",
           height: "100%",
-          background: "rgba(0,0,0,0.4)",
+          background: "rgba(0,0,0,0.5)",
           opacity: menuOpen ? 1 : 0,
-          pointerEvents: menuOpen ? "auto" : "none",
-          transition: "0.3s"
+          visibility: menuOpen ? "visible" : "hidden",
+          transition: "0.3s",
+          zIndex: 1001,
         }}
       />
 
-      {/* 🔥 ВЫЕЗЖАЮЩЕЕ МЕНЮ */}
-      <div style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        width: "260px",
-        height: "100%",
-        background: "black",
-        color: "white",
-        padding: "20px",
-        transform: menuOpen ? "translateX(0)" : "translateX(-100%)",
-        transition: "0.3s ease"
-      }}>
+      {/* SIDE MENU */}
+      <div
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "280px",
+          height: "100%",
+          background: "#111",
+          color: "white",
+          padding: "20px",
+          transform: menuOpen ? "translateX(0)" : "translateX(-100%)",
+          transition: "0.35s ease",
+          zIndex: 1002,
+          boxShadow: menuOpen ? "10px 0 30px rgba(0,0,0,0.4)" : "none",
+        }}
+      >
         <h2>SensX</h2>
 
-        <p style={{ marginTop: "20px" }}>👤 Профиль</p>
-        <p>📦 Заказы</p>
-        <p>⚙️ Настройки</p>
+        <p style={{ marginTop: "30px", cursor: "pointer" }}>👤 Профиль</p>
+        <p style={{ cursor: "pointer" }}>📦 Заказы</p>
+        <p style={{ cursor: "pointer" }}>⚙️ Настройки</p>
+        <p style={{ cursor: "pointer" }}>❤️ Избранное</p>
       </div>
 
-      {/* ОТСТУП */}
-      <div style={{ marginTop: "80px" }} />
-
-      {/* ТОВАРЫ */}
-      <div style={{
-        display: "grid",
-        gridTemplateColumns: "1fr 1fr",
-        gap: "20px"
-      }}>
-        {products.map((p, i) => (
-          <div key={i}>
-            <img src={p.img} style={{ width: "100%" }} />
-            <h3>{p.name}</h3>
-            <p>{p.price} грн</p>
-            <button onClick={() => addToCart(p)}>
-              В корзину
-            </button>
-          </div>
-        ))}
+      {/* CONTENT */}
+      <div style={{ paddingTop: "80px", padding: "80px 20px 20px" }}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: "20px",
+          }}
+        >
+          {products.map((p, i) => (
+            <div key={i} style={{ border: "1px solid #eee", padding: "10px" }}>
+              <img src={p.img} style={{ width: "100%" }} />
+              <h3>{p.name}</h3>
+              <p>{p.price} грн</p>
+              <button onClick={() => addToCart(p)}>В корзину</button>
+            </div>
+          ))}
+        </div>
       </div>
 
-      {/* КОРЗИНА */}
+      {/* CART BUTTON */}
       <a href="/cart">
-        <div style={{
-          position: "fixed",
-          bottom: "20px",
-          right: "20px",
-          background: "black",
-          color: "white",
-          width: "60px",
-          height: "60px",
-          borderRadius: "50%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center"
-        }}>
+        <div
+          style={{
+            position: "fixed",
+            bottom: "20px",
+            right: "20px",
+            background: "black",
+            color: "white",
+            width: "60px",
+            height: "60px",
+            borderRadius: "50%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000,
+            fontSize: "20px",
+          }}
+        >
           🛒
         </div>
       </a>
-
     </div>
   );
 }
