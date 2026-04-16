@@ -8,60 +8,23 @@ export default function Cart() {
     setCart(saved);
   }, []);
 
-  function removeItem(index) {
-    const newCart = cart.filter((_, i) => i !== index);
-    setCart(newCart);
-    localStorage.setItem("cart", JSON.stringify(newCart));
-  }
-
-  const total = cart.reduce(
-    (sum, item) => sum + item.price * item.count,
-    0
-  );
+  const total = cart.reduce((sum, i) => sum + i.price * i.count, 0);
 
   return (
-    <div style={{ padding: "20px", fontFamily: "Arial" }}>
+    <div style={{ padding: 20 }}>
       <h1>Корзина</h1>
 
-      <a href="/">← Назад</a>
+      {cart.map((item, i) => (
+        <div key={i}>
+          {item.name} × {item.count} = {item.price * item.count} грн
+        </div>
+      ))}
 
-      {cart.length === 0 ? (
-        <p>Пусто</p>
-      ) : (
-        cart.map((item, i) => (
-          <div
-            key={i}
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              marginTop: "10px",
-              borderBottom: "1px solid #ddd",
-              paddingBottom: "10px"
-            }}
-          >
-            {/* ЛЕВО */}
-            <div>
-              <button
-                onClick={() => removeItem(i)}
-                style={{
-                  marginRight: "10px",
-                  background: "red",
-                  color: "white",
-                  border: "none"
-                }}
-              >
-                Убрать
-              </button>
+      <h2>Итого: {total} грн</h2>
 
-              {item.name} — {item.price} грн × {item.count}
-            </div>
-          </div>
-        ))
-      )}
-
-      <h2 style={{ marginTop: "20px" }}>
-        Итого: {total} грн
-      </h2>
+      <a href="/checkout">
+        <button>Оплатить</button>
+      </a>
     </div>
   );
 }
