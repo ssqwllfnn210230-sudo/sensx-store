@@ -42,7 +42,7 @@ export default function Home() {
     {
       name: "SENSX JEANS",
       price: 2400,
-      img: "/jeans.jpg",
+      img: "/file_00000000693481f486ee07c8c9e09712.png",
       description: "Oversize чёрно-серые джинсы премиум-класса",
     },
   ];
