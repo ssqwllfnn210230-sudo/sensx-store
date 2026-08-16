@@ -1,357 +1,469 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function Home() {
+  const product = {
+    name: "SENSX JEANS",
+    price: 2400,
+    img: "/file_00000000693481f486ee07c8c9e09712.png",
+    description: "Oversize чёрно-серые джинсы премиум-класса",
+  };
+
   const [cart, setCart] = useState([]);
+  const [favorites, setFavorites] = useState([]);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const [nickname, setNickname] = useState("");
+  const [avatar, setAvatar] = useState("");
 
   useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem("cart")) || [];
-    setCart(saved);
+    setCart(JSON.parse(localStorage.getItem("cart")) || []);
+    setFavorites(JSON.parse(localStorage.getItem("favorites")) || []);
+    setNickname(localStorage.getItem("nickname") || "");
+    setAvatar(localStorage.getItem("avatar") || "");
   }, []);
 
-  function addToCart(product) {
-    const existingIndex = cart.findIndex(
-      (item) => item.name === product.name
-    );
+  function addToCart() {
+    const old = [...cart];
+    const index = old.findIndex((x) => x.name === product.name);
 
-    let newCart = [...cart];
-
-    if (existingIndex !== -1) {
-      newCart[existingIndex].count += 1;
+    if (index >= 0) {
+      old[index].count += 1;
     } else {
-      newCart.push({ ...product, count: 1 });
+      old.push({ ...product, count: 1 });
     }
 
-    setCart(newCart);
-    localStorage.setItem("cart", JSON.stringify(newCart));
+    setCart(old);
+    localStorage.setItem("cart", JSON.stringify(old));
   }
 
-  const products = [
-    {
-      name: "Кофта SensX",
-      price: 1500,
-      img: "https://i.imgur.com/3QZQZQy.png",
-      description: "Чёрная кофта SensX с капюшоном",
-    },
-    {
-      name: "Футболка SensX",
-      price: 900,
-      img: "https://i.imgur.com/3QZQZQy.png",
-      description: "Фирменная футболка SensX",
-    },
-    {
-      name: "SENSX JEANS",
-      price: 2400,
-      img: "/file_00000000693481f486ee07c8c9e09712.png",
-      description: "Oversize чёрно-серые джинсы премиум-класса",
-    },
-  ];
+  function toggleFavorite() {
+    let newFavorites;
+
+    if (favorites.some((x) => x.name === product.name)) {
+      newFavorites = favorites.filter((x) => x.name !== product.name);
+    } else {
+      newFavorites = [...favorites, product];
+    }
+
+    setFavorites(newFavorites);
+    localStorage.setItem("favorites", JSON.stringify(newFavorites));
+  }
+
+  function saveProfile() {
+    localStorage.setItem("nickname", nickname);
+    setProfileOpen(false);
+  }
+
+  function uploadAvatar(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      setAvatar(reader.result);
+      localStorage.setItem("avatar", reader.result);
+    };
+
+    reader.readAsDataURL(file);
+  }
+
+  const isFavorite = favorites.some(
+    (x) => x.name === product.name
+  );
 
   return (
     <div
       style={{
-        fontFamily: "Arial, sans-serif",
-        background: "#f7f7f7",
         minHeight: "100vh",
+        background: "#f7f7f7",
         color: "#111",
+        fontFamily: "Arial, sans-serif",
       }}
     >
-      {/* TOP BAR */}
+      {/* TOP */}
       <div
         style={{
           position: "fixed",
           top: 0,
           left: 0,
           right: 0,
-          height: "60px",
+          height: 60,
+          background: "#fff",
+          borderBottom: "1px solid #eee",
           display: "flex",
           alignItems: "center",
           padding: "0 20px",
-          background: "white",
           zIndex: 1000,
-          borderBottom: "1px solid #eee",
         }}
       >
-        {/* MENU BUTTON */}
         <div
           onClick={() => setMenuOpen(true)}
           style={{
-            fontSize: "26px",
+            fontSize: 26,
             cursor: "pointer",
-            userSelect: "none",
           }}
         >
           ☰
         </div>
 
-        <h2
-          style={{
-            marginLeft: "15px",
-            letterSpacing: "1px",
-          }}
-        >
+        <h2 style={{ marginLeft: 15 }}>
           SensX Shop
         </h2>
+
+        {/* CART */}
+        <a
+          href="/cart"
+          style={{
+            marginLeft: "auto",
+            textDecoration: "none",
+            color: "#111",
+            position: "relative",
+            fontSize: 25,
+          }}
+        >
+          🛒
+
+          {cart.length > 0 && (
+            <span
+              style={{
+                position: "absolute",
+                top: -7,
+                right: -9,
+                background: "red",
+                color: "white",
+                width: 18,
+                height: 18,
+                borderRadius: "50%",
+                fontSize: 11,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontWeight: "bold",
+              }}
+            >
+              {cart.reduce((sum, x) => sum + x.count, 0)}
+            </span>
+          )}
+        </a>
       </div>
 
-      {/* DARK OVERLAY */}
+      {/* MENU */}
       <div
         onClick={() => setMenuOpen(false)}
         style={{
           position: "fixed",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          background: "rgba(0,0,0,0.6)",
+          inset: 0,
+          background: "rgba(0,0,0,.6)",
+          zIndex: 1001,
           opacity: menuOpen ? 1 : 0,
           visibility: menuOpen ? "visible" : "hidden",
-          transition: "0.3s",
-          zIndex: 1001,
         }}
       />
 
-      {/* SIDE MENU */}
       <div
         style={{
           position: "fixed",
           top: 0,
           left: 0,
-          width: "280px",
+          width: 280,
           height: "100%",
           background: "#111",
-          color: "white",
-          padding: "20px",
-          transform: menuOpen ? "translateX(0)" : "translateX(-100%)",
-          transition: "0.35s ease",
+          color: "#fff",
+          padding: 25,
           zIndex: 1002,
-          boxShadow: menuOpen
-            ? "10px 0 30px rgba(0,0,0,0.4)"
-            : "none",
+          transform: menuOpen
+            ? "translateX(0)"
+            : "translateX(-100%)",
+          transition: ".3s",
         }}
       >
-        <h2
+        <h2>SENSX</h2>
+
+        <div
+          onClick={() => {
+            setProfileOpen(true);
+            setMenuOpen(false);
+          }}
           style={{
-            letterSpacing: "2px",
-            marginBottom: "40px",
+            marginTop: 40,
+            cursor: "pointer",
           }}
         >
-          SENSX
-        </h2>
-
-        <p style={{ marginTop: "30px", cursor: "pointer" }}>
           👤 Профиль
-        </p>
+        </div>
 
-        <p style={{ cursor: "pointer" }}>
-          📦 Заказы
-        </p>
-
-        <p style={{ cursor: "pointer" }}>
-          ⚙️ Настройки
-        </p>
-
-        <p style={{ cursor: "pointer" }}>
+        <a
+          href="/favorites"
+          style={{
+            display: "block",
+            color: "#fff",
+            textDecoration: "none",
+            marginTop: 25,
+          }}
+        >
           ❤️ Избранное
-        </p>
+        </a>
+
+        <a
+          href="/cart"
+          style={{
+            display: "block",
+            color: "#fff",
+            textDecoration: "none",
+            marginTop: 25,
+          }}
+        >
+          🛒 Корзина
+        </a>
       </div>
 
       {/* CONTENT */}
-      <div
+      <main
         style={{
-          paddingTop: "90px",
-          paddingLeft: "20px",
-          paddingRight: "20px",
-          paddingBottom: "100px",
-          maxWidth: "1200px",
-          margin: "0 auto",
+          paddingTop: 95,
+          maxWidth: 700,
+          margin: "auto",
+          paddingLeft: 20,
+          paddingRight: 20,
+          paddingBottom: 80,
         }}
       >
-        {/* TITLE */}
-        <div
+        <p
           style={{
-            marginBottom: "30px",
+            fontSize: 12,
+            letterSpacing: 3,
+            color: "#777",
           }}
         >
-          <p
-            style={{
-              fontSize: "12px",
-              letterSpacing: "3px",
-              color: "#777",
-              marginBottom: "8px",
-            }}
-          >
-            SENSX COLLECTION
-          </p>
+          SENSX COLLECTION
+        </p>
 
-          <h1
-            style={{
-              fontSize: "32px",
-              margin: 0,
-              letterSpacing: "1px",
-            }}
-          >
-            NEW DROP
-          </h1>
-        </div>
+        <h1>NEW DROP</h1>
 
-        {/* PRODUCTS */}
+        {/* PRODUCT */}
         <div
           style={{
-            display: "grid",
-            gridTemplateColumns:
-              "repeat(auto-fit, minmax(280px, 1fr))",
-            gap: "24px",
+            background: "#fff",
+            border: "1px solid #e5e5e5",
           }}
         >
-          {products.map((p, i) => (
-            <div
-              key={i}
+          <div
+            style={{
+              position: "relative",
+              background: "#111",
+            }}
+          >
+            <img
+              src={product.img}
+              alt={product.name}
               style={{
-                background: "white",
-                borderRadius: "4px",
-                overflow: "hidden",
-                border: "1px solid #e5e5e5",
+                width: "100%",
+                display: "block",
+              }}
+            />
+
+            {/* HEART */}
+            <button
+              onClick={toggleFavorite}
+              style={{
+                position: "absolute",
+                right: 15,
+                bottom: 15,
+                width: 45,
+                height: 45,
+                borderRadius: "50%",
+                border: "none",
+                background: "#fff",
+                color: isFavorite ? "red" : "#111",
+                fontSize: 25,
+                cursor: "pointer",
               }}
             >
-              {/* PRODUCT IMAGE */}
-              <div
-                style={{
-                  width: "100%",
-                  aspectRatio: "1 / 1",
-                  background: "#111",
-                  overflow: "hidden",
-                }}
-              >
-                <img
-                  src={p.img}
-                  alt={p.name}
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                    display: "block",
-                  }}
-                />
-              </div>
+              {isFavorite ? "♥" : "♡"}
+            </button>
+          </div>
 
-              {/* PRODUCT INFO */}
-              <div
-                style={{
-                  padding: "18px",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    gap: "10px",
-                  }}
-                >
-                  <h3
-                    style={{
-                      margin: 0,
-                      fontSize: "18px",
-                      letterSpacing: "0.5px",
-                    }}
-                  >
-                    {p.name}
-                  </h3>
+          <div style={{ padding: 20 }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+              }}
+            >
+              <h2>{product.name}</h2>
 
-                  <strong
-                    style={{
-                      fontSize: "16px",
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    {p.price} грн
-                  </strong>
-                </div>
-
-                <p
-                  style={{
-                    color: "#777",
-                    fontSize: "14px",
-                    lineHeight: "1.5",
-                    marginTop: "10px",
-                  }}
-                >
-                  {p.description}
-                </p>
-
-                {/* JEANS DETAILS */}
-                {p.name === "SENSX JEANS" && (
-                  <div
-                    style={{
-                      marginTop: "15px",
-                      paddingTop: "15px",
-                      borderTop: "1px solid #eee",
-                      fontSize: "12px",
-                      color: "#666",
-                      lineHeight: "1.8",
-                    }}
-                  >
-                    <div>• OVERSIZE FIT</div>
-                    <div>• ЧЁРНО-СЕРЫЙ WASH</div>
-                    <div>• PREMIUM DENIM</div>
-                    <div>• SENSX X EMBROIDERY</div>
-                  </div>
-                )}
-
-                {/* BUTTON */}
-                <button
-                  onClick={() => addToCart(p)}
-                  style={{
-                    width: "100%",
-                    marginTop: "18px",
-                    padding: "14px",
-                    background: "#111",
-                    color: "white",
-                    border: "none",
-                    borderRadius: "2px",
-                    cursor: "pointer",
-                    fontSize: "14px",
-                    fontWeight: "bold",
-                    letterSpacing: "1px",
-                  }}
-                >
-                  В КОРЗИНУ
-                </button>
-              </div>
+              <strong>
+                {product.price} грн
+              </strong>
             </div>
-          ))}
-        </div>
-      </div>
 
-      {/* CART BUTTON */}
-      <a
-        href="/cart"
-        style={{
-          textDecoration: "none",
-        }}
-      >
+            <p style={{ color: "#777" }}>
+              {product.description}
+            </p>
+
+            <div
+              style={{
+                fontSize: 12,
+                color: "#666",
+                lineHeight: 1.8,
+                marginTop: 15,
+              }}
+            >
+              • OVERSIZE FIT
+              <br />
+              • ЧЁРНО-СЕРЫЙ WASH
+              <br />
+              • PREMIUM DENIM
+              <br />
+              • SENSX X EMBROIDERY
+            </div>
+
+            <button
+              onClick={addToCart}
+              style={{
+                width: "100%",
+                marginTop: 20,
+                padding: 15,
+                background: "#111",
+                color: "#fff",
+                border: "none",
+                cursor: "pointer",
+                fontWeight: "bold",
+              }}
+            >
+              В КОРЗИНУ
+            </button>
+          </div>
+        </div>
+      </main>
+
+      {/* PROFILE */}
+      {profileOpen && (
         <div
           style={{
             position: "fixed",
-            bottom: "20px",
-            right: "20px",
-            background: "#111",
-            color: "white",
-            width: "60px",
-            height: "60px",
-            borderRadius: "50%",
+            inset: 0,
+            background: "rgba(0,0,0,.6)",
+            zIndex: 2000,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            zIndex: 1000,
-            fontSize: "20px",
-            boxShadow: "0 5px 20px rgba(0,0,0,0.25)",
+            padding: 20,
           }}
         >
-          🛒
+          <div
+            style={{
+              background: "#fff",
+              width: "100%",
+              maxWidth: 400,
+              padding: 25,
+              borderRadius: 8,
+            }}
+          >
+            <h2>Профиль</h2>
+
+            <div
+              style={{
+                textAlign: "center",
+                margin: "20px 0",
+              }}
+            >
+              {avatar ? (
+                <img
+                  src={avatar}
+                  style={{
+                    width: 90,
+                    height: 90,
+                    borderRadius: "50%",
+                    objectFit: "cover",
+                  }}
+                />
+              ) : (
+                <div
+                  style={{
+                    width: 90,
+                    height: 90,
+                    borderRadius: "50%",
+                    background: "#eee",
+                    margin: "auto",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: 35,
+                  }}
+                >
+                  👤
+                </div>
+              )}
+            </div>
+
+            <input
+              type="file"
+              accept="image/*"
+              onChange={uploadAvatar}
+              style={{ width: "100%" }}
+            />
+
+            <input
+              value={nickname}
+              onChange={(e) => setNickname(e.target.value)}
+              placeholder="Твой ник"
+              style={{
+                width: "100%",
+                boxSizing: "border-box",
+                marginTop: 15,
+                padding: 13,
+                border: "1px solid #ddd",
+              }}
+            />
+
+            <button
+              onClick={saveProfile}
+              style={{
+                width: "100%",
+                marginTop: 15,
+                padding: 14,
+                background: "#111",
+                color: "#fff",
+                border: "none",
+              }}
+            >
+              СОХРАНИТЬ
+            </button>
+
+            <button
+              onClick={() => setProfileOpen(false)}
+              style={{
+                width: "100%",
+                marginTop: 10,
+                padding: 14,
+                background: "#eee",
+                border: "none",
+              }}
+            >
+              ЗАКРЫТЬ
+            </button>
+
+            <button
+              style={{
+                width: "100%",
+                marginTop: 15,
+                padding: 14,
+                background: "#fff",
+                border: "1px solid #ddd",
+              }}
+              onClick={() =>
+                alert(
+                  "Подключение Google сделаем следующим этапом через Firebase."
+                )
+              }
+            >
+              🔵 ВОЙТИ ЧЕРЕЗ GOOGLE
+            </button>
+          </div>
         </div>
-      </a>
+      )}
     </div>
   );
-        }
+      }
