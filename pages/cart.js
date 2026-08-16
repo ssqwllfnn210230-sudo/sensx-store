@@ -2,6 +2,13 @@ import { useEffect, useState } from "react";
 
 export default function Cart() {
   const [cart, setCart] = useState([]);
+  const [form, setForm] = useState({
+    name: "",
+    phone: "",
+    city: "",
+    delivery: "Новая почта",
+    comment: "",
+  });
 
   useEffect(() => {
     setCart(JSON.parse(localStorage.getItem("cart")) || []);
@@ -11,6 +18,33 @@ export default function Cart() {
     const newCart = cart.filter((item) => item.name !== name);
     setCart(newCart);
     localStorage.setItem("cart", JSON.stringify(newCart));
+  }
+
+  function sendOrder() {
+    if (!form.name || !form.phone || !form.city) {
+      alert("Заполни имя, телефон и город");
+      return;
+    }
+
+    let text = `🔥 НОВЫЙ ЗАКАЗ SENSX%0A%0A`;
+
+    cart.forEach((item) => {
+      text += `👖 ${item.name}%0A`;
+      text += `💰 ${item.price} грн × ${item.count}%0A%0A`;
+    });
+
+    text += `💵 ИТОГО: ${total} грн%0A%0A`;
+    text += `👤 Имя: ${form.name}%0A`;
+    text += `📞 Телефон: ${form.phone}%0A`;
+    text += `📍 Город: ${form.city}%0A`;
+    text += `🚚 Доставка: ${form.delivery}%0A`;
+
+    if (form.comment) {
+      text += `💬 Комментарий: ${form.comment}%0A`;
+    }
+
+    window.location.href =
+      `https://t.me/sensx_shop?text=${text}`;
   }
 
   const total = cart.reduce(
@@ -25,10 +59,8 @@ export default function Cart() {
         background: "#f7f7f7",
         color: "#111",
         fontFamily: "Arial, sans-serif",
-        paddingBottom: 50,
       }}
     >
-      {/* HEADER */}
       <div
         style={{
           height: 60,
@@ -42,9 +74,9 @@ export default function Cart() {
         <a
           href="/"
           style={{
-            textDecoration: "none",
             color: "#111",
-            fontSize: 24,
+            textDecoration: "none",
+            fontSize: 25,
           }}
         >
           ←
@@ -55,21 +87,16 @@ export default function Cart() {
         </h2>
       </div>
 
-      {/* CONTENT */}
       <main
         style={{
           maxWidth: 700,
           margin: "auto",
           padding: 20,
+          paddingBottom: 80,
         }}
       >
         {cart.length === 0 ? (
-          <div
-            style={{
-              textAlign: "center",
-              paddingTop: 100,
-            }}
-          >
+          <div style={{ textAlign: "center", paddingTop: 80 }}>
             <h2>Корзина пуста</h2>
 
             <a
@@ -77,7 +104,7 @@ export default function Cart() {
               style={{
                 display: "inline-block",
                 marginTop: 20,
-                padding: "14px 25px",
+                padding: 15,
                 background: "#111",
                 color: "#fff",
                 textDecoration: "none",
@@ -93,56 +120,44 @@ export default function Cart() {
                 key={item.name}
                 style={{
                   background: "#fff",
-                  border: "1px solid #e5e5e5",
-                  marginBottom: 15,
                   padding: 15,
+                  marginBottom: 15,
+                  border: "1px solid #e5e5e5",
                   display: "flex",
                   gap: 15,
                   alignItems: "center",
                 }}
               >
-                {/* PHOTO */}
                 <img
                   src={item.img}
                   alt={item.name}
                   style={{
-                    width: 110,
-                    height: 110,
+                    width: 100,
+                    height: 100,
                     objectFit: "cover",
-                    background: "#111",
                   }}
                 />
 
-                {/* INFO */}
                 <div style={{ flex: 1 }}>
                   <h3 style={{ margin: "0 0 8px" }}>
                     {item.name}
                   </h3>
 
-                  <div style={{ color: "#777" }}>
-                    {item.price} грн
-                  </div>
+                  <div>{item.price} грн</div>
 
-                  <div
-                    style={{
-                      marginTop: 8,
-                      fontSize: 13,
-                    }}
-                  >
+                  <div style={{ color: "#777", marginTop: 6 }}>
                     Количество: {item.count}
                   </div>
                 </div>
 
-                {/* DELETE */}
                 <button
                   onClick={() => removeItem(item.name)}
                   style={{
                     background: "#111",
                     color: "#fff",
                     border: "none",
-                    padding: "10px 12px",
+                    padding: 10,
                     cursor: "pointer",
-                    fontSize: 12,
                   }}
                 >
                   УДАЛИТЬ
@@ -150,21 +165,75 @@ export default function Cart() {
               </div>
             ))}
 
-            {/* TOTAL */}
             <div
               style={{
                 background: "#fff",
                 padding: 20,
-                marginTop: 25,
                 border: "1px solid #e5e5e5",
+                marginTop: 25,
               }}
             >
+              <h2>Оформление заказа</h2>
+
+              <input
+                placeholder="Ваше имя"
+                value={form.name}
+                onChange={(e) =>
+                  setForm({ ...form, name: e.target.value })
+                }
+                style={inputStyle}
+              />
+
+              <input
+                placeholder="Телефон или Telegram"
+                value={form.phone}
+                onChange={(e) =>
+                  setForm({ ...form, phone: e.target.value })
+                }
+                style={inputStyle}
+              />
+
+              <input
+                placeholder="Город"
+                value={form.city}
+                onChange={(e) =>
+                  setForm({ ...form, city: e.target.value })
+                }
+                style={inputStyle}
+              />
+
+              <select
+                value={form.delivery}
+                onChange={(e) =>
+                  setForm({ ...form, delivery: e.target.value })
+                }
+                style={inputStyle}
+              >
+                <option>Новая почта</option>
+                <option>Укрпочта</option>
+                <option>Самовывоз</option>
+              </select>
+
+              <textarea
+                placeholder="Комментарий к заказу"
+                value={form.comment}
+                onChange={(e) =>
+                  setForm({ ...form, comment: e.target.value })
+                }
+                style={{
+                  ...inputStyle,
+                  minHeight: 90,
+                  resize: "vertical",
+                }}
+              />
+
               <div
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
-                  fontSize: 20,
                   fontWeight: "bold",
+                  fontSize: 20,
+                  marginTop: 20,
                 }}
               >
                 <span>ИТОГО</span>
@@ -172,6 +241,7 @@ export default function Cart() {
               </div>
 
               <button
+                onClick={sendOrder}
                 style={{
                   width: "100%",
                   marginTop: 20,
@@ -180,15 +250,37 @@ export default function Cart() {
                   color: "#fff",
                   border: "none",
                   fontWeight: "bold",
+                  fontSize: 15,
                   cursor: "pointer",
                 }}
               >
-                ОФОРМИТЬ ЗАКАЗ
+                📩 ОТПРАВИТЬ ЗАКАЗ
               </button>
+
+              <p
+                style={{
+                  textAlign: "center",
+                  color: "#777",
+                  fontSize: 12,
+                  marginTop: 12,
+                }}
+              >
+                Заказ отправится в Telegram магазина @sensx_shop
+              </p>
             </div>
           </>
         )}
       </main>
     </div>
   );
-                    }
+}
+
+const inputStyle = {
+  width: "100%",
+  boxSizing: "border-box",
+  padding: 14,
+  marginTop: 12,
+  border: "1px solid #ddd",
+  fontSize: 14,
+  outline: "none",
+};
