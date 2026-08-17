@@ -123,7 +123,7 @@ export default function Home() {
             letterSpacing: 4,
           }}
         >
-          SENSX
+          МАМА ЛЮБЛЮ ТЕБЕ ❤️
         </div>
 
         <a
