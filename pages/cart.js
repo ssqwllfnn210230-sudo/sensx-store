@@ -1,286 +1,223 @@
-import { useEffect, useState } from "react";
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Документи</title>
 
-export default function Cart() {
-  const [cart, setCart] = useState([]);
-  const [form, setForm] = useState({
-    name: "",
-    phone: "",
-    city: "",
-    delivery: "Новая почта",
-    comment: "",
-  });
-
-  useEffect(() => {
-    setCart(JSON.parse(localStorage.getItem("cart")) || []);
-  }, []);
-
-  function removeItem(name) {
-    const newCart = cart.filter((item) => item.name !== name);
-    setCart(newCart);
-    localStorage.setItem("cart", JSON.stringify(newCart));
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
   }
 
-  function sendOrder() {
-    if (!form.name || !form.phone || !form.city) {
-      alert("Заполни имя, телефон и город");
-      return;
-    }
-
-    let text = `🔥 НОВЫЙ ЗАКАЗ SENSX%0A%0A`;
-
-    cart.forEach((item) => {
-      text += `👖 ${item.name}%0A`;
-      text += `💰 ${item.price} грн × ${item.count}%0A%0A`;
-    });
-
-    text += `💵 ИТОГО: ${total} грн%0A%0A`;
-    text += `👤 Имя: ${form.name}%0A`;
-    text += `📞 Телефон: ${form.phone}%0A`;
-    text += `📍 Город: ${form.city}%0A`;
-    text += `🚚 Доставка: ${form.delivery}%0A`;
-
-    if (form.comment) {
-      text += `💬 Комментарий: ${form.comment}%0A`;
-    }
-
-    window.location.href =
-      `https://t.me/sensx_shop?text=${text}`;
+  body {
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(
+      180deg,
+      #75aaa8 0%,
+      #7fa9bd 35%,
+      #a8a9c5 70%,
+      #ddd8dc 100%
+    );
+    color: #111;
   }
 
-  const total = cart.reduce(
-    (sum, item) => sum + item.price * item.count,
-    0
-  );
+  .app {
+    min-height: 100vh;
+    padding-bottom: 95px;
+  }
 
-  return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "#f7f7f7",
-        color: "#111",
-        fontFamily: "Arial, sans-serif",
-      }}
-    >
-      <div
-        style={{
-          height: 60,
-          background: "#fff",
-          borderBottom: "1px solid #eee",
-          display: "flex",
-          alignItems: "center",
-          padding: "0 20px",
-        }}
-      >
-        <a
-          href="/"
-          style={{
-            color: "#111",
-            textDecoration: "none",
-            fontSize: 25,
-          }}
-        >
-          ←
-        </a>
+  /* Верхняя часть */
+  .top-space {
+    height: 220px;
+  }
 
-        <h2 style={{ marginLeft: 20 }}>
-          Корзина
-        </h2>
+  .content {
+    width: 86%;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  h1 {
+    font-size: 42px;
+    font-weight: 700;
+    margin-bottom: 55px;
+  }
+
+  /* Карта документа */
+  .document-card {
+    width: 100%;
+    min-height: 620px;
+    border-radius: 45px;
+    padding: 38px;
+    background: rgba(255, 255, 255, 0.10);
+    backdrop-filter: blur(12px);
+    box-shadow:
+      inset 0 1px 1px rgba(255,255,255,0.15),
+      0 15px 40px rgba(0,0,0,0.04);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .empty-card {
+    width: 100%;
+    min-height: 500px;
+    border-radius: 30px;
+    background: rgba(255,255,255,0.28);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .empty-card p {
+    color: #69717b;
+    font-size: 26px;
+    text-align: center;
+  }
+
+  /* Навигация снизу */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 96px;
+    background: #050505;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 100;
+  }
+
+  .nav-item {
+    color: #cfcfd4;
+    text-decoration: none;
+    font-size: 14px;
+    width: 25%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .nav-item svg {
+    width: 31px;
+    height: 31px;
+    stroke: #d8d8dd;
+    stroke-width: 1.8;
+    fill: none;
+  }
+
+  .nav-item.active {
+    color: white;
+  }
+
+  /* Телефонная адаптация */
+  @media (max-width: 480px) {
+    .top-space {
+      height: 190px;
+    }
+
+    .content {
+      width: 86%;
+    }
+
+    h1 {
+      font-size: 38px;
+      margin-bottom: 50px;
+    }
+
+    .document-card {
+      min-height: 540px;
+      padding: 25px;
+      border-radius: 42px;
+    }
+
+    .empty-card {
+      min-height: 440px;
+      border-radius: 28px;
+    }
+
+    .empty-card p {
+      font-size: 24px;
+    }
+  }
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <div class="top-space"></div>
+
+  <main class="content">
+
+    <h1>єДокумент</h1>
+
+    <div class="document-card">
+      <div class="empty-card">
+        <p>Дані не завантажено</p>
       </div>
-
-      <main
-        style={{
-          maxWidth: 700,
-          margin: "auto",
-          padding: 20,
-          paddingBottom: 80,
-        }}
-      >
-        {cart.length === 0 ? (
-          <div style={{ textAlign: "center", paddingTop: 80 }}>
-            <h2>Корзина пуста</h2>
-
-            <a
-              href="/"
-              style={{
-                display: "inline-block",
-                marginTop: 20,
-                padding: 15,
-                background: "#111",
-                color: "#fff",
-                textDecoration: "none",
-              }}
-            >
-              В МАГАЗИН
-            </a>
-          </div>
-        ) : (
-          <>
-            {cart.map((item) => (
-              <div
-                key={item.name}
-                style={{
-                  background: "#fff",
-                  padding: 15,
-                  marginBottom: 15,
-                  border: "1px solid #e5e5e5",
-                  display: "flex",
-                  gap: 15,
-                  alignItems: "center",
-                }}
-              >
-                <img
-                  src={item.img}
-                  alt={item.name}
-                  style={{
-                    width: 100,
-                    height: 100,
-                    objectFit: "cover",
-                  }}
-                />
-
-                <div style={{ flex: 1 }}>
-                  <h3 style={{ margin: "0 0 8px" }}>
-                    {item.name}
-                  </h3>
-
-                  <div>{item.price} грн</div>
-
-                  <div style={{ color: "#777", marginTop: 6 }}>
-                    Количество: {item.count}
-                  </div>
-                </div>
-
-                <button
-                  onClick={() => removeItem(item.name)}
-                  style={{
-                    background: "#111",
-                    color: "#fff",
-                    border: "none",
-                    padding: 10,
-                    cursor: "pointer",
-                  }}
-                >
-                  УДАЛИТЬ
-                </button>
-              </div>
-            ))}
-
-            <div
-              style={{
-                background: "#fff",
-                padding: 20,
-                border: "1px solid #e5e5e5",
-                marginTop: 25,
-              }}
-            >
-              <h2>Оформление заказа</h2>
-
-              <input
-                placeholder="Ваше имя"
-                value={form.name}
-                onChange={(e) =>
-                  setForm({ ...form, name: e.target.value })
-                }
-                style={inputStyle}
-              />
-
-              <input
-                placeholder="Телефон или Telegram"
-                value={form.phone}
-                onChange={(e) =>
-                  setForm({ ...form, phone: e.target.value })
-                }
-                style={inputStyle}
-              />
-
-              <input
-                placeholder="Город"
-                value={form.city}
-                onChange={(e) =>
-                  setForm({ ...form, city: e.target.value })
-                }
-                style={inputStyle}
-              />
-
-              <select
-                value={form.delivery}
-                onChange={(e) =>
-                  setForm({ ...form, delivery: e.target.value })
-                }
-                style={inputStyle}
-              >
-                <option>Новая почта</option>
-                <option>Укрпочта</option>
-                <option>Самовывоз</option>
-              </select>
-
-              <textarea
-                placeholder="Комментарий к заказу"
-                value={form.comment}
-                onChange={(e) =>
-                  setForm({ ...form, comment: e.target.value })
-                }
-                style={{
-                  ...inputStyle,
-                  minHeight: 90,
-                  resize: "vertical",
-                }}
-              />
-
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  fontWeight: "bold",
-                  fontSize: 20,
-                  marginTop: 20,
-                }}
-              >
-                <span>ИТОГО</span>
-                <span>{total} грн</span>
-              </div>
-
-              <button
-                onClick={sendOrder}
-                style={{
-                  width: "100%",
-                  marginTop: 20,
-                  padding: 16,
-                  background: "#111",
-                  color: "#fff",
-                  border: "none",
-                  fontWeight: "bold",
-                  fontSize: 15,
-                  cursor: "pointer",
-                }}
-              >
-                📩 ОТПРАВИТЬ ЗАКАЗ
-              </button>
-
-              <p
-                style={{
-                  textAlign: "center",
-                  color: "#777",
-                  fontSize: 12,
-                  marginTop: 12,
-                }}
-              >
-                Заказ отправится в Telegram магазина @sensx_shop
-              </p>
-            </div>
-          </>
-        )}
-      </main>
     </div>
-  );
-}
 
-const inputStyle = {
-  width: "100%",
-  boxSizing: "border-box",
-  padding: 14,
-  marginTop: 12,
-  border: "1px solid #ddd",
-  fontSize: 14,
-  outline: "none",
-};
+  </main>
+
+</div>
+
+
+<!-- Нижнее меню -->
+<nav class="bottom-nav">
+
+  <a href="#" class="nav-item">
+
+    <svg viewBox="0 0 24 24">
+      <path d="M4 6h16M4 12h11M4 18h16"/>
+    </svg>
+
+    <span>Стрічка</span>
+  </a>
+
+
+  <a href="#" class="nav-item active">
+
+    <svg viewBox="0 0 24 24">
+      <path d="M6 3h8l4 4v14H6z"/>
+      <path d="M14 3v5h5"/>
+      <path d="M9 12h6M9 16h6"/>
+    </svg>
+
+    <span>Документи</span>
+  </a>
+
+
+  <a href="#" class="nav-item">
+
+    <svg viewBox="0 0 24 24">
+      <path d="M13 2L3 14h7l-1 8 10-13h-7z"/>
+    </svg>
+
+    <span>Сервіси</span>
+  </a>
+
+
+  <a href="#" class="nav-item">
+
+    <svg viewBox="0 0 24 24">
+      <circle cx="12" cy="7" r="4"/>
+      <path d="M4 22c1-5 4-7 8-7s7 2 8 7"/>
+    </svg>
+
+    <span>Меню</span>
+  </a>
+
+</nav>
+
+</body>
+</html>
